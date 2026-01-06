@@ -1,0 +1,7 @@
+C:\Users\shohail.parwej\MyApp\bin\Release\net8.0\publish\MyApp.exe
+C:\Users\shohail.parwej\MyApp\bin\Release\net8.0\publish\appsettings.Development.json
+C:\Users\shohail.parwej\MyApp\bin\Release\net8.0\publish\appsettings.json
+C:\Users\shohail.parwej\MyApp\bin\Release\net8.0\publish\MyApp.dll
+C:\Users\shohail.parwej\MyApp\bin\Release\net8.0\publish\MyApp.deps.json
+C:\Users\shohail.parwej\MyApp\bin\Release\net8.0\publish\MyApp.runtimeconfig.json
+C:\Users\shohail.parwej\MyApp\bin\Release\net8.0\publish\MyApp.pdb
