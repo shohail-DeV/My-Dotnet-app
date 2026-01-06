@@ -68,10 +68,10 @@ pipeline {
         stage('Archive Artifact') {
             steps {
                 echo 'Archive published output'
-                archiveArtifacts artifacts: "${PUBLISH_DIR}/**"
+                archiveArtifacts artifacts: "${PUBLISH_DIR}/**", fingerprint: true
             }
         }
-        
+
     }
 
     post {
