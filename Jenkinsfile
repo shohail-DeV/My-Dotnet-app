@@ -56,12 +56,7 @@ pipeline {
         stage('Publish') {
             steps {
                 echo 'Publishing app'
-                bat """
-                dotnet publish ^
-                  --configuration %BUILD_CONFIG% ^
-                  --no-build ^
-                  --output %PUBLISH_DIR%
-                """
+                bat " dotnet publish --configuration %BUILD_CONFIG% --no-build --output %PUBLISH_DIR% "
             }
         }
 
