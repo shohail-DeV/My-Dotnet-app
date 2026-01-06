@@ -11,7 +11,7 @@ pipeline {
 
     stages {
 
-         stage('Validation of .NET SDK') {
+         stage('Validation of SDK') {
             steps {
                 bat '''
                 where dotnet
@@ -22,7 +22,7 @@ pipeline {
 
         stage('Hello DotNet') {
             steps {
-                echo 'Hello MyApp using .NET 8.0!'
+                echo 'Hello MyApp .NET8'
             }
         }
 
@@ -41,21 +41,21 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Building application'
+                echo 'Building app'
                 bat "dotnet build --configuration %BUILD_CONFIG% --no-restore"
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests (if any)'
+                echo 'Running tests'
                 bat "dotnet test --configuration %BUILD_CONFIG% --no-build --verbosity normal"
             }
         }
 
         stage('Publish') {
             steps {
-                echo 'Publishing application'
+                echo 'Publishing app'
                 bat """
                 dotnet publish ^
                   --configuration %BUILD_CONFIG% ^
@@ -67,7 +67,7 @@ pipeline {
 
         stage('Archive Artifact') {
             steps {
-                echo 'Archiving published output'
+                echo 'Archive published output'
                 archiveArtifacts artifacts: "${PUBLISH_DIR}/**", fingerprint: true
             }
         }
