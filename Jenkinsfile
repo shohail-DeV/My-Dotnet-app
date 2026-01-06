@@ -71,18 +71,7 @@ pipeline {
                 archiveArtifacts artifacts: "${PUBLISH_DIR}/**"
             }
         }
-
-        // OPTIONAL – enable when you have a server
-        /*
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application'
-                bat '''
-                xcopy %PUBLISH_DIR% C:\\deployments\\MyApp /E /I /Y
-                '''
-            }
-        }
-        */
+        
     }
 
     post {
