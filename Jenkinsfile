@@ -23,7 +23,7 @@ pipeline {
 
         stage('Cloning the repo') {
             steps {
-                git branch: 'main', url: ''
+                git branch: 'main', url: 'https://github.com/shohail-DeV/My-Dotnet-app.git'
             }
         }
 
