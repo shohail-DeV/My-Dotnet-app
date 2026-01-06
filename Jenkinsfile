@@ -11,7 +11,7 @@ pipeline {
 
     stages {
 
-         stage('Validate Tooling') {
+         stage('Validation of .NET SDK') {
             steps {
                 bat '''
                 where dotnet
