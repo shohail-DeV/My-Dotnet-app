@@ -58,6 +58,17 @@ pipeline{
                 '''
             }
         }
+// I am skipping the IIS deployment and app pool recycle steps for simplicity
+
+        stage('Run Application'){
+            steps{
+                bat '''
+                start /B dotnet %PUBLISH_DIR%\\MyApp.dll
+                timeout /t 5
+                curl %APP_URL%
+                '''
+            }
+        }
 
     }
 
