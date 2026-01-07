@@ -58,18 +58,55 @@ pipeline{
                 '''
             }
         }
-// I am skipping the IIS deployment and app pool recycle steps for simplicity
 
-        stage('Run Application'){
+        // CD Stages
+        
+        stage('Stop App Pool'){
+            steps{
+                bat '%windir%\\system32\\inetsrv\\appcmd stop apppool "MyApp"'
+            }
+        }
+
+        stage('Stop App Site'){
+            steps{
+                bat '%windir%\\system32\\inetsrv\\appcmd stop site "MyApp"'
+            }
+        }
+
+
+        stage('Deploy to IIS'){
             steps{
                 bat '''
-                start /B dotnet %PUBLISH_DIR%\\MyApp.dll
-                timeout /t 5
-                curl %APP_URL%
+                if exist "C:\\inetpub\\wwwroot\\publish" rmdir /s /q "C:\\inetpub\\wwwroot\\publish"
+                mkdir "C:\\inetpub\\wwwroot\\publish"
+                robocopy "publish\\*" "C:\\inetpub\\wwwroot\\publish\\" /E /Y /I
                 '''
             }
         }
 
+
+        stage('Start App Pool'){
+            steps{
+                bat '%windir%\\system32\\inetsrv\\appcmd start apppool "MyApp"'
+            }
+        }
+
+        stage('Start IIS Site'){
+            steps{
+                bat '%windir%\\system32\\inetsrv\\appcmd start site "MyApp"'
+            }
+        }
     }
 
+    post {
+        success {
+            echo 'CI/CD pipeline executed successfully'
+        }
+        failure {
+            echo 'Pipeline failed - rollback or investigation required'
+        }
+        // always{
+        //     cleanWs()
+        // }
+    }
 }
