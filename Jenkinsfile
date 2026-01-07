@@ -6,7 +6,7 @@ pipeline {
         DOTNET_NOLOGO = 'true'
         BUILD_CONFIG = 'Release'
         APP_NAME = 'MyApp'
-        PUBLISH_DIR = 'publish'
+        PUBLISH_DIR = 'artifact'
         IIS_SITE = 'MyApp'
         IIS_PATH = 'C:\\inetpub\\wwwroot\\publish'
         APP_URL = 'http://localhost:8087'
@@ -54,7 +54,7 @@ pipeline {
         dotnet publish MyApp.csproj ^
           --configuration Release ^
           --no-build ^
-          --output publish
+          --output artifact
         '''
     }
 }
@@ -66,13 +66,13 @@ pipeline {
 
         stage('Stop App Pool') {
     steps {
-        bat '%windir%\\system32\\inetsrv\\appcmd stop apppool "MyApp"'
+        bat '%windir%\\system32\\inetsrv\\appcmd stop apppool "MyApp" || exit /b 0'
     }
 }
 
 stage('Stop IIS Site') {
     steps {
-        bat '%windir%\\system32\\inetsrv\\appcmd stop site "MyApp"'
+        bat '%windir%\\system32\\inetsrv\\appcmd stop site "MyApp" || exit /b 0'
     }
 }
 
@@ -81,7 +81,7 @@ stage('Deploy to IIS') {
         bat '''
         if exist "C:\\inetpub\\wwwroot\\publish" rmdir /s /q "C:\\inetpub\\wwwroot\\publish"
         mkdir "C:\\inetpub\\wwwroot\\publish"
-        xcopy "publish\\*" "C:\\inetpub\\wwwroot\\publish\\" /E /Y /I
+        xcopy "artifact\\*" "C:\\inetpub\\wwwroot\\publish\\" /E /Y /I
         '''
     }
 }
