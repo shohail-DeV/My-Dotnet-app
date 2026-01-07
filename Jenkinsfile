@@ -79,7 +79,7 @@ pipeline{
                 bat '''
                 if exist "C:\\inetpub\\wwwroot\\publish" rmdir /s /q "C:\\inetpub\\wwwroot\\publish"
                 mkdir "C:\\inetpub\\wwwroot\\publish"
-                robocopy "publish\\*" "C:\\inetpub\\wwwroot\\publish\\" /E /Y /I
+                xcopy "publish\\*" "C:\\inetpub\\wwwroot\\publish\\" /E /Y /I
                 '''
             }
         }
