@@ -60,10 +60,9 @@ pipeline {
 }
 
 
-        /* ======================
-           CD STARTS HERE
-           ====================== */
-
+    
+           //CD
+    
         stage('Stop App Pool') {
     steps {
         bat '%windir%\\system32\\inetsrv\\appcmd stop apppool "MyApp" || exit /b 0'
@@ -108,8 +107,8 @@ stage('Start IIS Site') {
         failure {
             echo 'Pipeline failed – rollback or investigation required'
         }
-        always{
-            cleanWs()
-        }
+        // always{
+        //     cleanWs()
+        // }
     }
 }
