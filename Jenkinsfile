@@ -52,7 +52,7 @@ pipeline{
             steps{
                 bat '''
                 dotnet publish MyApp.csproj ^
-                --configuartion Release ^
+                --configuration Release ^
                 --no-build ^
                 --output publish
                 '''
