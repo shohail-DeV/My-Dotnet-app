@@ -76,8 +76,5 @@ pipeline {
         failure {
             echo 'Pipeline failed – immediate attention required'
         }
-        always {
-            cleanWs()
-        }
-    }
+            }
 }
