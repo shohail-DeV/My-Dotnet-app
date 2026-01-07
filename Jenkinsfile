@@ -7,11 +7,14 @@ pipeline {
         BUILD_CONFIG = 'Release'
         APP_NAME = 'MyApp'
         PUBLISH_DIR = 'publish'
+        IIS_SITE = 'MyApp'
+        IIS_PATH = 'C:\\inetpub\\wwwroot\\publish'
+        APP_URL = 'http://localhost:8087'
     }
 
     stages {
 
-         stage('Validating SDK') {
+        stage('Validate SDK') {
             steps {
                 bat '''
                 where dotnet
@@ -20,61 +23,92 @@ pipeline {
             }
         }
 
-        stage('Hello DotNet') {
+        stage('Checkout Source') {
             steps {
-                echo 'Hello MyApp .NET8'
+                git branch: 'main',
+                    url: 'https://github.com/shohail-DeV/My-Dotnet-app.git'
             }
         }
 
-        stage('Cloning the repo') {
+        stage('Restore') {
             steps {
-                git branch: 'main', url: 'https://github.com/shohail-DeV/My-Dotnet-app.git'
-            }
-        }
-
-        stage('Restore Dependencies') {
-            steps {
-                echo 'Restoring NuGet packages'
                 bat 'dotnet restore'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building app'
                 bat "dotnet build --configuration %BUILD_CONFIG% --no-restore"
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests'
-                bat "dotnet test --configuration %BUILD_CONFIG% --no-build --verbosity normal"
+                bat "dotnet test --configuration %BUILD_CONFIG% --no-build"
             }
         }
 
         stage('Publish') {
             steps {
-                echo 'Publishing app'
-                bat " dotnet publish --configuration %BUILD_CONFIG% --no-build --output %PUBLISH_DIR% "
+                bat "dotnet publish --configuration %BUILD_CONFIG% --no-build --output %PUBLISH_DIR%"
+            }
+        }
+
+        /* ======================
+           CD STARTS HERE
+           ====================== */
+
+        stage('Stop IIS Site') {
+            steps {
+                bat '''
+                %windir%\\system32\\inetsrv\\appcmd stop site "%IIS_SITE%"
+                '''
+            }
+        }
+
+        stage('Deploy to IIS') {
+            steps {
+                bat '''
+                if exist "%IIS_PATH%" rmdir /s /q "%IIS_PATH%"
+                mkdir "%IIS_PATH%"
+                xcopy "%PUBLISH_DIR%\\*" "%IIS_PATH%\\" /E /Y /I
+                '''
+            }
+        }
+
+        stage('Start IIS Site') {
+            steps {
+                bat '''
+                %windir%\\system32\\inetsrv\\appcmd start site "%IIS_SITE%"
+                '''
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                bat '''
+                powershell -Command ^
+                "try { ^
+                    $r = Invoke-WebRequest -Uri %APP_URL% -UseBasicParsing -TimeoutSec 10; ^
+                    if ($r.StatusCode -ne 200) { exit 1 } ^
+                } catch { exit 1 }"
+                '''
             }
         }
 
         stage('Archive Artifact') {
             steps {
-                echo 'Archive published output'
                 archiveArtifacts artifacts: "${PUBLISH_DIR}/**", fingerprint: true
             }
         }
-
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully'
+            echo 'CI/CD pipeline executed successfully'
         }
         failure {
-            echo 'Pipeline failed – immediate attention required'
+            echo 'Pipeline failed – rollback or investigation required'
         }
-            }
+    }
 }
