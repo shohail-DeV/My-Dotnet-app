@@ -49,10 +49,16 @@ pipeline {
         }
 
         stage('Publish') {
-            steps {
-                bat "dotnet publish --configuration %BUILD_CONFIG% --no-build --output %PUBLISH_DIR%"
-            }
-        }
+    steps {
+        bat '''
+        dotnet publish MyApp.csproj ^
+          --configuration Release ^
+          --no-build ^
+          --output publish
+        '''
+    }
+}
+
 
         /* ======================
            CD STARTS HERE
