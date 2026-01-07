@@ -58,49 +58,41 @@ pipeline {
            CD STARTS HERE
            ====================== */
 
-        stage('Stop IIS Site') {
-            steps {
-                bat '''
-                %windir%\\system32\\inetsrv\\appcmd stop site "%IIS_SITE%"
-                '''
-            }
-        }
+        stage('Stop App Pool') {
+    steps {
+        bat '%windir%\\system32\\inetsrv\\appcmd stop apppool "MyApp"'
+    }
+}
 
-        stage('Deploy to IIS') {
-            steps {
-                bat '''
-                if exist "%IIS_PATH%" rmdir /s /q "%IIS_PATH%"
-                mkdir "%IIS_PATH%"
-                xcopy "%PUBLISH_DIR%\\*" "%IIS_PATH%\\" /E /Y /I
-                '''
-            }
-        }
+stage('Stop IIS Site') {
+    steps {
+        bat '%windir%\\system32\\inetsrv\\appcmd stop site "MyApp"'
+    }
+}
 
-        stage('Start IIS Site') {
-            steps {
-                bat '''
-                %windir%\\system32\\inetsrv\\appcmd start site "%IIS_SITE%"
-                '''
-            }
-        }
+stage('Deploy to IIS') {
+    steps {
+        bat '''
+        if exist "C:\\inetpub\\wwwroot\\publish" rmdir /s /q "C:\\inetpub\\wwwroot\\publish"
+        mkdir "C:\\inetpub\\wwwroot\\publish"
+        xcopy "publish\\*" "C:\\inetpub\\wwwroot\\publish\\" /E /Y /I
+        '''
+    }
+}
 
-        stage('Health Check') {
-            steps {
-                bat '''
-                powershell -Command ^
-                "try { ^
-                    $r = Invoke-WebRequest -Uri %APP_URL% -UseBasicParsing -TimeoutSec 10; ^
-                    if ($r.StatusCode -ne 200) { exit 1 } ^
-                } catch { exit 1 }"
-                '''
-            }
-        }
+stage('Start App Pool') {
+    steps {
+        bat '%windir%\\system32\\inetsrv\\appcmd start apppool "MyApp"'
+    }
+}
 
-        stage('Archive Artifact') {
-            steps {
-                archiveArtifacts artifacts: "${PUBLISH_DIR}/**", fingerprint: true
-            }
-        }
+stage('Start IIS Site') {
+    steps {
+        bat '%windir%\\system32\\inetsrv\\appcmd start site "MyApp"'
+    }
+}
+
+      
     }
 
     post {
