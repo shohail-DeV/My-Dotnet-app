@@ -1,7 +1,7 @@
-pipeline {
+pipeline{
     agent any
 
-    environment {
+    environment{
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
         DOTNET_NOLOGO = 'true'
         BUILD_CONFIG = 'Release'
@@ -12,10 +12,10 @@ pipeline {
         APP_URL = 'http://localhost:8087'
     }
 
-    stages {
+    stages{
 
-        stage('Validate SDK') {
-            steps {
+        stage('Validate SDK'){
+            steps{
                 bat '''
                 where dotnet
                 dotnet --version
@@ -23,90 +23,42 @@ pipeline {
             }
         }
 
-        stage('Checkout Source') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/shohail-DeV/My-Dotnet-app.git'
+        stage('Checkout Code'){
+            steps{
+                git branch : 'main',
+                url : 'https://github.com/shohail-DeV/My-Dotnet-app.git'
             }
         }
 
-        stage('Restore') {
-            steps {
+        stage('Restore'){
+            steps{
                 bat 'dotnet restore'
             }
         }
 
-        stage('Build') {
-            steps {
+        stage('Build'){
+            steps{
                 bat "dotnet build --configuration %BUILD_CONFIG% --no-restore"
             }
         }
 
-        stage('Test') {
-            steps {
+        stage('Test'){
+            steps{
                 bat "dotnet test --configuration %BUILD_CONFIG% --no-build"
             }
         }
 
-        stage('Publish') {
-    steps {
-        bat '''
-        dotnet publish MyApp.csproj ^
-          --configuration Release ^
-          --no-build ^
-          --output publish
-        '''
-    }
-}
-
-
-        /* ======================
-           CD STARTS HERE
-           ====================== */
-
-        stage('Stop App Pool') {
-    steps {
-        bat '%windir%\\system32\\inetsrv\\appcmd stop apppool "MyApp"'
-    }
-}
-
-stage('Stop IIS Site') {
-    steps {
-        bat '%windir%\\system32\\inetsrv\\appcmd stop site "MyApp"'
-    }
-}
-
-stage('Deploy to IIS') {
-    steps {
-        bat '''
-        if exist "C:\\inetpub\\wwwroot\\publish" rmdir /s /q "C:\\inetpub\\wwwroot\\publish"
-        mkdir "C:\\inetpub\\wwwroot\\publish"
-        xcopy "publish\\*" "C:\\inetpub\\wwwroot\\publish\\" /E /Y /I
-        '''
-    }
-}
-
-stage('Start App Pool') {
-    steps {
-        bat '%windir%\\system32\\inetsrv\\appcmd start apppool "MyApp"'
-    }
-}
-
-stage('Start IIS Site') {
-    steps {
-        bat '%windir%\\system32\\inetsrv\\appcmd start site "MyApp"'
-    }
-}
-
-      
-    }
-
-    post {
-        success {
-            echo 'CI/CD pipeline executed successfully'
+        stage('Publish'){
+            steps{
+                bat '''
+                dotnet publish MyApp.csproj ^
+                --configuartion Release ^
+                --no-build ^
+                --output publish
+                '''
+            }
         }
-        failure {
-            echo 'Pipeline failed – rollback or investigation required'
-        }
+
     }
+
 }

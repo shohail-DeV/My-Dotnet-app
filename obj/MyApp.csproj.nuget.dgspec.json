@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\shohail.parwej\\MyApp\\MyApp.csproj": {}
+    "C:\\Users\\shohail.parwej\\Desktop\\My-Dotnet-app\\MyApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\shohail.parwej\\MyApp\\MyApp.csproj": {
+    "C:\\Users\\shohail.parwej\\Desktop\\My-Dotnet-app\\MyApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\shohail.parwej\\MyApp\\MyApp.csproj",
+        "projectUniqueName": "C:\\Users\\shohail.parwej\\Desktop\\My-Dotnet-app\\MyApp.csproj",
         "projectName": "MyApp",
-        "projectPath": "C:\\Users\\shohail.parwej\\MyApp\\MyApp.csproj",
+        "projectPath": "C:\\Users\\shohail.parwej\\Desktop\\My-Dotnet-app\\MyApp.csproj",
         "packagesPath": "C:\\Users\\shohail.parwej\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\shohail.parwej\\MyApp\\obj\\",
+        "outputPath": "C:\\Users\\shohail.parwej\\Desktop\\My-Dotnet-app\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\shohail.parwej\\AppData\\Roaming\\NuGet\\NuGet.Config"
